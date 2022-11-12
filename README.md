@@ -1,1 +1,1 @@
-# COMP3005-Project
+# Bookstore - COMP3005 Project
