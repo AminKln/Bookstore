@@ -1,0 +1,12 @@
+BEGIN TRANSACTION;
+
+DROP TABLE IF EXISTS "checkout_basket";
+DROP TABLE IF EXISTS "order";
+DROP TABLE IF EXISTS "admin_user";
+DROP TABLE IF EXISTS "user";
+DROP TABLE IF EXISTS "book";
+DROP TABLE IF EXISTS "publisher_phone_number";
+DROP TABLE IF EXISTS "publisher";
+DROP TABLE IF EXISTS "author";
+
+END TRANSACTION;
