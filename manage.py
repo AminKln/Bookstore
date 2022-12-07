@@ -2,7 +2,7 @@ import argparse
 import sys
 import os
 from server import server
-from scripts import init_database
+from scripts import sql
 from settings import *
 
 def main():
@@ -15,7 +15,7 @@ def main():
 
     if args.command == 'init_db':
         print('Initializing database...')
-        init_database.init(DB_PATH, SQL_BUILD_TABLE_PATH)
+        sql.run_sql(DB_PATH, SQL_BUILD_TABLE_PATH)
         print('Database Initialized!')
 
     elif args.command == 'runserver':

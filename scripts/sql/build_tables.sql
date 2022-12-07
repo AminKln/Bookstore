@@ -35,7 +35,6 @@ CREATE TABLE "publisher_phone_number" (
 CREATE TABLE "book" (
     "isbn" INTEGER,
     "title" TEXT NOT NULL,
-    "genre" TEXT NOT NULL CHECK ("genre" IN ('fiction', 'non-fiction', 'biography', 'poetry', 'drama', 'other')),
     "n_of_pages" INTEGER NOT NULL,
     "publish_date" DATETIME NOT NULL, --first publish date,
     "language" TEXT NOT NULL CHECK ("language" IN ('English', 'French', 'German', 'Italian', 'Spanish', 'Russian')),
@@ -49,39 +48,46 @@ CREATE TABLE "book" (
     PRIMARY KEY ("isbn")
 );
 
+CREATE TABLE "genre" (
+    "isbn" INTEGER,
+    "name" TEXT,
+    FOREIGN KEY ("isbn") REFERENCES "book" ("isbn"),
+    PRIMARY KEY ("isbn", "name") 
+);
+
 CREATE TABLE "user" (
-    "id" INTEGER,
-    "username" TEXT NOT NULL,
+    "username" TEXT,
     "password" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "address" TEXT,
-    PRIMARY KEY ("id")
+    PRIMARY KEY ("username")
 );
 
 CREATE TABLE "admin_user" (
-    "user_id" INTEGER,
-    FOREIGN KEY ("user_id") REFERENCES "user" ("id"),
-    PRIMARY KEY ("user_id")
+    "username" TEXT,
+    FOREIGN KEY ("username") REFERENCES "user" ("username"),
+    PRIMARY KEY ("username")
 );
 
 CREATE TABLE "order" (
-    "user_id" INTEGER NOT NULL,
-    "book_isbn" INTEGER NOT NULL,
+    "username" TEXT NOT NULL,
+    "isbn" INTEGER NOT NULL,
+    "order_date" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "quantity" INTEGER NOT NULL,
-    "last_update" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_on" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "status" TEXT NOT NULL CHECK ("status" IN ('pending', 'shipped', 'delivered', 'cancelled')),
-    FOREIGN KEY ("user_id") REFERENCES "user" ("id"),
-    FOREIGN KEY ("book_isbn") REFERENCES "book" ("isbn"),
-    PRIMARY KEY ("user_id", "book_isbn")
+    FOREIGN KEY ("username") REFERENCES "user" ("username"),
+    FOREIGN KEY ("isbn") REFERENCES "book" ("isbn"),
+    PRIMARY KEY ("username", "isbn", "order_date")
 );
 
 CREATE TABLE "checkout_basket" (
-    "user_id" INTEGER NOT NULL,
-    "book_isbn" INTEGER NOT NULL,
+    "username" TEXT NOT NULL,
+    "isbn" INTEGER NOT NULL,
     "quantity" INTEGER NOT NULL,
-    FOREIGN KEY ("user_id") REFERENCES "user" ("id"),
-    FOREIGN KEY ("book_isbn") REFERENCES "book" ("isbn"),
-    PRIMARY KEY ("user_id", "book_isbn")
+    FOREIGN KEY ("username") REFERENCES "user" ("username"),
+    FOREIGN KEY ("isbn") REFERENCES "book" ("isbn"),
+    PRIMARY KEY ("username", "isbn")
 );
 
 END TRANSACTION;

@@ -1,0 +1,4 @@
+[] ER: mark ISBN as pk for book
+[] ER: remove * from right hand side of book
+[] ER: mark id as pk for publisher
+[] ER: remove multi-value for language (book)
