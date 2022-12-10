@@ -1,7 +1,7 @@
 import sqlite3
 from sqlite3 import OperationalError
 
-def run_sql(db_path, sql_path):
+def run_sql(db_path, sql_path, verbose=False):
     con = sqlite3.connect(db_path)
     db = con.cursor()
 
@@ -11,7 +11,9 @@ def run_sql(db_path, sql_path):
         try:
             db.execute(statement)
         except OperationalError as e:
-            print(e)
+            if verbose:
+                print(statement)
+                (e)
     con.commit()
 
     db.close()

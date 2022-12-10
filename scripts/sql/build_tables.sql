@@ -5,46 +5,46 @@ DROP TABLE IF EXISTS "checkout_basket";
 DROP TABLE IF EXISTS "order";
 DROP TABLE IF EXISTS "admin_user";
 DROP TABLE IF EXISTS "user";
+DROP TABLE IF EXISTS "written_by";
+DROP TABLE IF EXISTS "genre";
 DROP TABLE IF EXISTS "book";
 DROP TABLE IF EXISTS "publisher_phone_number";
 DROP TABLE IF EXISTS "publisher";
 DROP TABLE IF EXISTS "author";
 
 CREATE TABLE "author" (
-    "id" INTEGER,
     "name" TEXT NOT NULL,
-    PRIMARY KEY ("id")
+    PRIMARY KEY ("name")
 );
 
 CREATE TABLE "publisher" (
-    "id" INTEGER,
     "name" TEXT NOT NULL,
     "address" TEXT NOT NULL,
     "email" TEXT NOT NULL,
-    "bank_account" INTEGER NOT NULL CHECK ("bank_account" >= 1000000000000000 AND "bank_account" <= 9999999999999999),
-    PRIMARY KEY ("id")
+    "bank_account" INTEGER NOT NULL CHECK ("bank_account" >= 1000000000000000 AND "bank_account" <= 9999999999999999), --16 digits
+    PRIMARY KEY ("name")
 );
 
 CREATE TABLE "publisher_phone_number" (
-    "publisher_id" INTEGER NOT NULL,
-    "phone_number" INTEGER NOT NULL CHECK ("phone_number" >= 1000000000 AND "phone_number" <= 9999999999),
-    FOREIGN KEY ("publisher_id") REFERENCES "publisher" (id),
-    PRIMARY KEY ("publisher_id", "phone_number")
+    "publisher" TEXT NOT NULL,
+    "phone_number" INTEGER NOT NULL CHECK ("phone_number" >= 1000000000 AND "phone_number" <= 9999999999), --10 digits
+    FOREIGN KEY ("publisher") REFERENCES "publisher" ("name"),
+    PRIMARY KEY ("publisher", "phone_number")
 );
 
 CREATE TABLE "book" (
-    "isbn" INTEGER,
+    "isbn" INTEGER ,--CHECK ("isbn" >= 1000000000 AND "isbn" <= 9999999999999), -- between 10-13 digits
     "title" TEXT NOT NULL,
     "n_of_pages" INTEGER NOT NULL,
-    "publish_date" DATETIME NOT NULL, --first publish date,
-    "language" TEXT NOT NULL CHECK ("language" IN ('English', 'French', 'German', 'Italian', 'Spanish', 'Russian')),
+    "publication_date" DATETIME NOT NULL, --first ever publish date
+    "language" TEXT NOT NULL ,--CHECK ("language" IN ('English', 'French', 'German', 'Italian', 'Spanish', 'Russian')),
     "description" TEXT,
     "price" DECIMAL(6,2) NOT NULL,
     "count" INTEGER NOT NULL,
-    "author_id" INTEGER NOT NULL,
-    "publisher_id" INTEGER NOT NULL,
-    FOREIGN KEY ("author_id") REFERENCES "author" ("id"),
-    FOREIGN KEY ("publisher_id") REFERENCES "publisher" ("id"),
+    -- "author_name" TEXT NOT NULL,
+    "publisher" TEXT NOT NULL,
+    -- FOREIGN KEY ("author_name") REFERENCES "author" ("name"),
+    FOREIGN KEY ("publisher") REFERENCES "publisher" ("name"),
     PRIMARY KEY ("isbn")
 );
 
@@ -53,6 +53,15 @@ CREATE TABLE "genre" (
     "name" TEXT,
     FOREIGN KEY ("isbn") REFERENCES "book" ("isbn"),
     PRIMARY KEY ("isbn", "name") 
+);
+
+CREATE TABLE "written_by" (
+    "isbn" INTEGER,
+    "author" TEXT,
+    "is_primary" INTEGER NOT NULL CHECK ("is_primary" IN (0, 1)),
+    FOREIGN KEY ("isbn") REFERENCES "book" ("isbn"),
+    FOREIGN KEY ("author") REFERENCES "author" ("name"),
+    PRIMARY KEY ("isbn", "author")
 );
 
 CREATE TABLE "user" (
