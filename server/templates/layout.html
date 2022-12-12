@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{% block title %}My Bookstore{% endblock %}</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #333;
+      color: #fff;
+      padding: 20px;
+    }
+    header a{
+        color: #fff;
+        text-decoration: none;
+    }
+    header h1 {
+      margin: 0;
+    }
+    header nav ul {
+      margin: 0;
+      padding: 0;
+      display: flex;
+    }
+    header nav ul li {
+      list-style: none;
+      margin-right: 10px;
+    }
+    main {
+      padding: 20px;
+    }
+    footer {
+      background-color: #333;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+    }
+  </style>
+  {% block styles %}{% endblock %}
+</head>
+<body>
+  <header>
+    {% block header %}
+      <h1>My Bookstore</h1>
+      <form action="search" method="GET">
+        <input type="text" id="query" name="query" placeholder="Search by book name, author, ISBN, etc." />
+        <button type="submit">Search</button>
+      </form>
+      <nav>
+        {% if current_user.is_admin == 1 %}
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/books">Books</a></li>
+            <li><a href="/authors">Authors</a></li>
+            <li><a href="/reports">Reports</a></li>
+          </ul>
+        {% else %}
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/books">Books</a></li>
+            <li><a href="/authors">Authors</a></li>
+            <li><a href="/orders">Orders</a></li>
+            <li><a href="/cart">Cart</a></li>
+          </ul>
+        {% endif %}
+      </nav>
+      {% if current_user.is_authenticated %}
+        <p>Logged in as {{ current_user.username }}. <a href="/logout">Logout</a></p>
+      {% else %}
+        <p><a href="/login">Login</a></p>
+        {% endif %}
+    {% endblock %}
+  </header>
+  <main>
+    {% block main %}{% endblock %}
+  </main>
+    <footer>
+        {% block footer %}
+        <p>Copyright My Bookstore</p>
+        {% endblock %}
+    </footer>
+</body>
+</html>

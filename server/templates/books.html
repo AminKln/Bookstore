@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block title %}All Books{% endblock %}
+
+{% block style %}
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 5px;
+            text-align: center;
+        }
+        tr:nth-child(even) {
+            background-color: #eee;
+        }
+    </style>
+{% endblock %}
+
+{% block main %}
+    <h1>All Books</h1>
+    <table>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>ISBN</th>
+            <th>Price</th>
+            <th>Number in stock</th>
+        </tr>
+        {% for book in books %}
+            <tr>
+                <td><a href="/book?isbn={{ book.isbn }}">{{ book.title }}</a></td>
+                <td>{{ book.author }}</td>
+                <td>{{ book.isbn }}</td>
+                <td>{{ book.price }}</td>
+                <td>{{ book.count }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

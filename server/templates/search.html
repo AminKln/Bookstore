@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+
+{% block title %}Search Results{% endblock %}
+{% block styles %}
+    <style>
+        a{color: #000;}
+    </style>
+{% endblock %}
+{% block main %}
+  <h2>Search Results</h2>
+
+  {% if results %}
+    <ul>
+      {% for result in results %}
+        <li><a href="{{ result.url }}">{{ result.title }}</a></li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No results found.</p>
+  {% endif %}
+{% endblock %}

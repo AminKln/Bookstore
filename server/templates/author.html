@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ author.name }}{% endblock %}
+
+{% block style %}
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 5px;
+            text-align: center;
+        }
+        tr:nth-child(even) {
+            background-color: #eee;
+        }
+    </style>
+{% endblock %}
+
+{% block main %}
+    <h1>{{ author.name }}</h1>
+    <table>
+        <tr>
+            <th>Title</th>
+            <th>Year</th>
+        </tr>
+        {% if author.books|length > 0 %}
+            {% for book in author.books %}
+                <tr>
+                    <td>{{ book.title }}</td>
+                    <td>{{ book.count }}</td>
+                    <td>{{ book.price }}</td>
+                    <td><a href="/book?isbn={{ book.isbn }}">View</a></td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="4">No books found</td>
+            </tr>
+        {% endif %}
+    </table>
+{% endblock %}

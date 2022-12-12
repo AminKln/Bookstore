@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+
+{% block title %}Order Details{% endblock %}
+{% block main %}
+    <h2>Order Details</h2>
+    <p><b>Order ID:</b> {{ order.id }}</p>
+    <p><b>Order Date:</b> {{ order.order_date }}</p>
+    <p><b>ISBN:</b> {{ order.isbn }}</p>
+    <p><b>Title:</b> {{ order.details.title }}</p>
+    <p><b>Author:</b> {{ order.details.author }}</p>
+    <p><b>Price:</b> {{ order.details.price }}</p>
+    <p><b>Count:</b> {{ order.count }}</p>
+    <p><b>Total:</b> {{ order.count * order.details.price }}</p>
+{% endblock %}

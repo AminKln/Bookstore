@@ -1,0 +1,36 @@
+<!-- bookstore shopping cart -->
+{% extends "layout.html" %}
+
+{% block title %}Shopping Cart{% endblock %}
+
+{% block main %}
+  <h2>Shopping Cart</h2>
+  {% if cart %}
+    <table>
+      <thead>
+        <tr>
+          <th>Book</th>
+          <th>count</th>
+          <th>Price</th>
+          <th>Total</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in cart %}
+          <tr>
+            <td><a href="/book?isbn={{ item.isbn }}">{{ item.details.title }}</a></td>
+            <td>{{ item.count }}</td>
+            <td>{{ item.details.price }}</td>
+            <td>{{ item.count * item.details.price }}</td>
+            <td><a href="/cart/remove?isbn={{ item.isbn }}">Remove</a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <p>Total: {{ total(cart) }}</p>
+    <a href="/checkout">Checkout</a>
+  {% else %}
+    <p>Your cart is empty.</p>
+  {% endif %}
+{% endblock %}

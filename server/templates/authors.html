@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+{% block title %}All Authors{% endblock %}
+
+{% block style %}
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 5px;
+            text-align: center;
+        }
+        tr:nth-child(even) {
+            background-color: #eee;
+        }
+    </style>
+{% endblock %}
+
+{% block main %}
+    <h1>Available Authors</h1>
+    <table>
+        <tr>
+            <th>Name</th>
+        </tr>
+        {% for author in authors %}
+            <tr>
+                <td><a href="/author?name={{ author.name }}">{{ author.name }}</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

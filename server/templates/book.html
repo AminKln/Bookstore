@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ book.title }}{% endblock %}
+
+{% block main %}
+    <h1>{{ book.title }}</h1>
+    <p>ISBN: {{ book.isbn }}</p>
+    <p>Number of pages: {{ book.n_of_pages }}</p>
+    <p>Publication date: {{ book.publication_date }}</p>
+    <p>Language: {{ book.language }}</p>
+    <p>Description: {{ book.description }}</p>
+    <p>Price: ${{ book.price }}</p>
+    <p>Number in stock: {{ book.count }}</p>
+    <p>Publisher: {{ book.publisher }}</p>
+
+    {% if current_user.is_admin %}
+        <h2>Update</h2>
+        <form method="post" action="{{ url_for('update_stock') }}">
+        <label for="count">Number of copies:</label>
+        <input type="number" id="count" name="count" min="1" value="1">
+        <input type="hidden" name="isbn" value="{{ book.isbn }}">
+        <input type="submit" value="Update Stock">
+        </form>
+    {% elif book.count > 0 %}
+        <h2>Purchase</h2>
+        <form method="post" action="{{ url_for('cart') }}">
+        <label for="count">Number of copies:</label>
+        <input type="number" id="count" name="count" min="1" max="{{ book.count }}" value="1">
+        <input type="hidden" name="isbn" value="{{ book.isbn }}">
+        <input type="submit" value="Add to Cart">
+        </form>
+    {% else %}
+        <p>Sorry, this book is out of stock.</p>
+    {% endif %} 
+{% endblock %}

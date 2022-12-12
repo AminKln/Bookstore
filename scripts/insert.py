@@ -37,6 +37,11 @@ def read(reader, verbose=False):
 def generate_sql(input_file, limit=None, offset=0, verbose=False):
     init(autoreset=True)
     sql = ""
+
+    #add test users
+    sql += "INSERT INTO user (username, password, email, is_admin) VALUES ('admin', 'admin', 'admin@email.com', 1);\n"
+    sql += "INSERT INTO user (username, password, email, is_admin) VALUES ('user', 'user', 'user@email.com', 0);\n"
+
     with open(input_file, 'r') as f:
         reader = csv.DictReader(f)
         author_pk = set()
@@ -86,10 +91,11 @@ def generate_sql(input_file, limit=None, offset=0, verbose=False):
                     description = random_text(np.random.randint(100, 250))
                     price = str(np.random.randint(10, 100)) + "." + str(np.random.randint(10, 100))
                     count = str(np.random.randint(1, 100))
+                    publisher_fees = str(float(price) * np.random.uniform(0.1, 0.25))
                     title = row['title'].replace("'", '')
                     sql += '''INSERT INTO book 
-                        (isbn, title, n_of_pages, publication_date, language, description, price, count, publisher) VALUES
-                        (''' + isbn13 + ", '" + title + "', " + row['num_pages'] + ", '" + row['publication_date'] + "', '" + row['language_code'] + "', '" + description + "', " + price + ", " + count + ", '" + publisher + "');\n"
+                        (isbn, title, n_of_pages, publication_date, language, description, price, publisher_fees, count, publisher) VALUES
+                        (''' + isbn13 + ", '" + title + "', " + row['num_pages'] + ", '" + row['publication_date'] + "', '" + row['language_code'] + "', '" + description + "', " + price + ", " + publisher_fees + ", " + count + ", '" + publisher + "');\n"
                 
                 #genres
                 genres = np.random.choice(['fiction', 'non-fiction', 'romance', 'mystery', 'horror', 'science-fiction', 'fantasy', 'thriller', 'drama', 'comedy'], np.random.randint(1, 4), replace=False)
@@ -113,10 +119,10 @@ def generate_sql(input_file, limit=None, offset=0, verbose=False):
 
     return sql
 
-def main(input_file, insert_sql_path='scripts/sql/insert.sql', limit=None, offset=0, verbose=False):
+def main(input_file, sql_data_path='scripts/sql/insert.sql', limit=None, offset=0, verbose=False):
     sql = generate_sql(input_file=input_file, limit=limit, offset=offset, verbose=verbose)
     #save sql to file
-    with open(insert_sql_path, 'w') as f:
+    with open(sql_data_path, 'w') as f:
         f.write(sql)
     
 if __name__ == '__main__':
