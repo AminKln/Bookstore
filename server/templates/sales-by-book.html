@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block title %}Sales by Book{% endblock %}
+
+{% block main %}
+    <h2>Sales by Book</h2>
+    
+    {% if sales %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Book</th>
+                    <th>Count</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sale in sales %}
+                    <tr>
+                        <td><a href="/book?isbn={{ sale.isbn }}">{{ sale.details.title }}</a></td>
+                        <td>{{ sale.count }}</td>
+                        <td>{{ sale.count * sale.details.price }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No sales found.</p>
+    {% endif %}
+{% endblock %}

@@ -134,6 +134,15 @@ def update_stock():
     api.update_stock(isbn, count)
     return redirect(url_for('book', isbn=isbn))
 
+@app.route('/sales-by-book', methods=['GET'])
+@login_required
+def sales_by_book():
+    if request.method == 'GET':
+        if current_user['is_admin'] != 1:
+            return redirect(url_for('index'))
+        sales = api.get_sales_by_book()
+        return render_template('sales-by-book.html', sales=sales)
+
 @app.route('/authors', methods=['GET'])
 def authors():
     if request.method == 'GET':

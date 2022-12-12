@@ -83,15 +83,27 @@ def add_to_cart(user, isbn, count):
     if user == None or isbn == None or count == None:
         return None
     count = int(count)
-    print([type(user), type(isbn), type(count)])
     if count <= 0:
         return None
     conn = sqlite3.connect('Bookstore.db')
     c = conn.cursor()
+    # check if book is already in cart
+    c.execute(f"SELECT count FROM cart WHERE username='{user['username']}' AND isbn='{isbn}'")
+    result = c.fetchone()
+    update = False
+    if result != None:
+        count += result[0]
+        update = True
+    # check if book is in stock
     c.execute(f"SELECT count FROM book WHERE isbn='{isbn}'")
     stock = c.fetchone()[0]
+    if stock == 0:
+        return None
     count = min(count, stock)
-    c.execute(f"INSERT INTO cart (username, isbn, count) VALUES ('{user['username']}', '{isbn}', {count})")
+    if update:
+        c.execute(f"UPDATE cart SET count={count} WHERE username='{user['username']}' AND isbn='{isbn}'")
+    else:
+        c.execute(f"INSERT INTO cart (username, isbn, count) VALUES ('{user['username']}', '{isbn}', {count})")
     conn.commit()
     conn.close()
 
@@ -177,10 +189,27 @@ def ensure_stock(isbn, threshold):
     c.execute(f"SELECT count FROM book WHERE isbn='{isbn}'")
     count = c.fetchone()[0]
     if count < threshold:
-        
         c.execute(f"UPDATE book SET count={threshold} WHERE isbn='{isbn}'")
+        c.execute(f"INSERT INTO order_record (username, isbn, count, status) VALUES ('admin', '{isbn}', {threshold - count}, 'pending')")
     conn.commit()
     conn.close()
+
+def sales_by_book(start_date="date('now', '-1 month')", end_date="date('now')"):
+    conn = sqlite3.connect('Bookstore.db')
+    c = conn.cursor()
+    keys = ['isbn', 'title', 'author', 'count', 'price', 'publisher_fees']
+    c.execute(f"SELECT " + ', '.join(keys) + f" FROM book INNER JOIN order_record ON book.isbn=order_record.isbn WHERE order_date BETWEEN {start_date} AND {end_date} AND username!='admin'")
+    sales = c.fetchall()
+    sales = [dict(zip(keys, result)) for result in sales]
+    c.execute(f"SELECT " + ', '.join(keys) + f" FROM book INNER JOIN order_record ON book.isbn=order_record.isbn WHERE order_date BETWEEN {start_date} AND {end_date} AND username='admin'")
+    expenses = c.fetchall()
+    expenses = [dict(zip(keys, result)) for result in expenses]
+    expenses = sum([result['count'] * result['price'] for result in expenses])
+    conn.close()
+    print(sales)
+    print(expenses)
+
+    return (sales, expenses)
 
 def prev_month_sales(isbn):
     conn = sqlite3.connect('Bookstore.db')
